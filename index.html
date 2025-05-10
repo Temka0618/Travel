@@ -48,6 +48,7 @@
         .logo {
             display: flex;
             align-items: center;
+            cursor: pointer;
         }
         
         .logo img {
@@ -75,11 +76,16 @@
             padding: 5px 10px;
             margin-left: 5px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         .language-switcher button.active {
             background-color: var(--accent-color);
             color: var(--dark-gray);
+        }
+        
+        .language-switcher button:hover:not(.active) {
+            background-color: rgba(255,255,255,0.1);
         }
         
         /* Navigation */
@@ -257,6 +263,11 @@
             border-radius: 4px;
             text-decoration: none;
             font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .card-btn:hover {
+            background-color: var(--secondary-color);
         }
         
         /* News section */
@@ -274,6 +285,12 @@
         .news-item {
             border-bottom: 1px solid #ddd;
             padding-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .news-item:hover {
+            transform: translateY(-5px);
         }
         
         .news-item h4 {
@@ -299,6 +316,11 @@
             color: var(--secondary-color);
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .see-all:hover {
+            color: var(--primary-color);
         }
         
         /* Footer */
@@ -354,11 +376,77 @@
             color: #999;
         }
         
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .close-modal:hover {
+            color: var(--dark-gray);
+        }
+        
+        .modal-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .modal-body p {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateY(200%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+        }
+        
         /* Responsive styles */
         @media (max-width: 768px) {
             .header-top {
                 flex-direction: column;
                 text-align: center;
+                position: relative;
             }
             
             .logo {
@@ -403,7 +491,7 @@
     <header>
         <div class="container">
             <div class="header-top">
-                <div class="logo">
+                <div class="logo" id="home-logo">
                     <img src="/api/placeholder/60/60" alt="Travel Mongolia Logo">
                     <div class="logo-text">
                         <h1>TRAVEL MONGOLIA</h1>
@@ -411,10 +499,10 @@
                     </div>
                 </div>
                 <div class="language-switcher">
-                    <button class="active">EN</button>
-                    <button>MN</button>
-                    <button>RU</button>
-                    <button>CN</button>
+                    <button class="active" data-lang="en">EN</button>
+                    <button data-lang="mn">MN</button>
+                    <button data-lang="ru">RU</button>
+                    <button data-lang="cn">CN</button>
                 </div>
             </div>
         </div>
@@ -422,50 +510,50 @@
         <!-- Navigation -->
         <nav>
             <div class="container">
-                <button class="menu-toggle">☰</button>
+                <button class="menu-toggle" aria-label="Toggle menu">☰</button>
                 <ul class="main-nav">
-                    <li><a href="#">Home</a></li>
+                    <li><a href="#" id="nav-home">Home</a></li>
                     <li>
-                        <a href="#">Destinations</a>
+                        <a href="#" id="nav-destinations">Destinations</a>
                         <div class="dropdown-content">
-                            <a href="#">Ulaanbaatar</a>
-                            <a href="#">Gobi Desert</a>
-                            <a href="#">Lake Khövsgöl</a>
-                            <a href="#">Altai Mountains</a>
-                            <a href="#">All Destinations</a>
+                            <a href="#" data-destination="ulaanbaatar">Ulaanbaatar</a>
+                            <a href="#" data-destination="gobi">Gobi Desert</a>
+                            <a href="#" data-destination="khovsgol">Lake Khövsgöl</a>
+                            <a href="#" data-destination="altai">Altai Mountains</a>
+                            <a href="#" data-destination="all">All Destinations</a>
                         </div>
                     </li>
                     <li>
-                        <a href="#">Travel Info</a>
+                        <a href="#" id="nav-travel-info">Travel Info</a>
                         <div class="dropdown-content">
-                            <a href="#">Visa Requirements</a>
-                            <a href="#">Transportation</a>
-                            <a href="#">Accommodation</a>
-                            <a href="#">Weather & Climate</a>
-                            <a href="#">Safety Tips</a>
+                            <a href="#" data-info="visa">Visa Requirements</a>
+                            <a href="#" data-info="transportation">Transportation</a>
+                            <a href="#" data-info="accommodation">Accommodation</a>
+                            <a href="#" data-info="weather">Weather & Climate</a>
+                            <a href="#" data-info="safety">Safety Tips</a>
                         </div>
                     </li>
                     <li>
-                        <a href="#">Experiences</a>
+                        <a href="#" id="nav-experiences">Experiences</a>
                         <div class="dropdown-content">
-                            <a href="#">Nomadic Culture</a>
-                            <a href="#">Adventure Tourism</a>
-                            <a href="#">Wildlife Watching</a>
-                            <a href="#">Festivals & Events</a>
+                            <a href="#" data-experience="nomadic">Nomadic Culture</a>
+                            <a href="#" data-experience="adventure">Adventure Tourism</a>
+                            <a href="#" data-experience="wildlife">Wildlife Watching</a>
+                            <a href="#" data-experience="festivals">Festivals & Events</a>
                         </div>
                     </li>
                     <li>
-                        <a href="#">Plan Your Trip</a>
+                        <a href="#" id="nav-plan">Plan Your Trip</a>
                         <div class="dropdown-content">
-                            <a href="#">Itineraries</a>
-                            <a href="#">Tour Operators</a>
-                            <a href="#">Travel Packages</a>
-                            <a href="#">Booking Services</a>
+                            <a href="#" data-plan="itineraries">Itineraries</a>
+                            <a href="#" data-plan="operators">Tour Operators</a>
+                            <a href="#" data-plan="packages">Travel Packages</a>
+                            <a href="#" data-plan="booking">Booking Services</a>
                         </div>
                     </li>
-                    <li><a href="#">Map</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" id="nav-map">Map</a></li>
+                    <li><a href="#" id="nav-about">About Us</a></li>
+                    <li><a href="#" id="nav-contact">Contact</a></li>
                 </ul>
             </div>
         </nav>
@@ -476,7 +564,7 @@
         <div class="hero-content">
             <h2>Experience the Land of Blue Sky</h2>
             <p>Discover Mongolia's breathtaking landscapes, rich nomadic culture, and warm hospitality</p>
-            <a href="#" class="hero-btn">Plan Your Adventure</a>
+            <a href="#" class="hero-btn" id="plan-adventure-btn">Plan Your Adventure</a>
         </div>
     </section>
     
@@ -490,7 +578,7 @@
                     <div class="card-content">
                         <h3>Nomadic Culture</h3>
                         <p>Experience the traditional nomadic lifestyle that has remained largely unchanged for centuries.</p>
-                        <a href="#" class="card-btn">Learn More</a>
+                        <a href="#" class="card-btn" data-card="nomadic-culture">Learn More</a>
                     </div>
                 </div>
                 <div class="card">
@@ -498,7 +586,7 @@
                     <div class="card-content">
                         <h3>Breathtaking Landscapes</h3>
                         <p>From the vast Gobi Desert to the pristine lakes and majestic mountains, Mongolia offers diverse natural wonders.</p>
-                        <a href="#" class="card-btn">Explore</a>
+                        <a href="#" class="card-btn" data-card="landscapes">Explore</a>
                     </div>
                 </div>
                 <div class="card">
@@ -506,7 +594,7 @@
                     <div class="card-content">
                         <h3>Adventure Tourism</h3>
                         <p>Embark on horseback riding, hiking, eagle hunting, and other thrilling adventures across Mongolia.</p>
-                        <a href="#" class="card-btn">View Adventures</a>
+                        <a href="#" class="card-btn" data-card="adventure">View Adventures</a>
                     </div>
                 </div>
             </div>
@@ -518,7 +606,7 @@
                     <div class="card-content">
                         <h3>Visa Requirements</h3>
                         <p>Learn about entry requirements, visa applications, and necessary documents for visiting Mongolia.</p>
-                        <a href="#" class="card-btn">Read More</a>
+                        <a href="#" class="card-btn" data-card="visa">Read More</a>
                     </div>
                 </div>
                 <div class="card">
@@ -526,7 +614,7 @@
                     <div class="card-content">
                         <h3>Weather & Climate</h3>
                         <p>Find out the best times to visit Mongolia and how to prepare for its continental climate extremes.</p>
-                        <a href="#" class="card-btn">Check Weather</a>
+                        <a href="#" class="card-btn" data-card="weather">Check Weather</a>
                     </div>
                 </div>
                 <div class="card">
@@ -534,7 +622,7 @@
                     <div class="card-content">
                         <h3>Safety Guidelines</h3>
                         <p>Important information to ensure your safety while traveling through Mongolia's diverse regions.</p>
-                        <a href="#" class="card-btn">Safety Tips</a>
+                        <a href="#" class="card-btn" data-card="safety">Safety Tips</a>
                     </div>
                 </div>
             </div>
@@ -546,28 +634,28 @@
         <div class="container">
             <h2 class="section-title">Travel News & Updates</h2>
             <div class="news-grid">
-                <div class="news-item">
+                <div class="news-item" data-news="flights">
                     <span class="date">May 5, 2025</span>
                     <h4>New Direct Flights to Mongolia Announced</h4>
                     <p>Several international airlines have announced new direct routes to Ulaanbaatar starting this summer.</p>
                 </div>
-                <div class="news-item">
+                <div class="news-item" data-news="naadam">
                     <span class="date">April 28, 2025</span>
                     <h4>Naadam Festival 2025 Dates Confirmed</h4>
                     <p>The dates for Mongolia's largest traditional festival have been officially announced.</p>
                 </div>
-                <div class="news-item">
+                <div class="news-item" data-news="ecotourism">
                     <span class="date">April 15, 2025</span>
                     <h4>New Eco-Tourism Initiative in Khövsgöl</h4>
                     <p>A sustainable tourism program aims to protect Lake Khövsgöl while enhancing visitor experiences.</p>
                 </div>
-                <div class="news-item">
+                <div class="news-item" data-news="visa">
                     <span class="date">April 3, 2025</span>
                     <h4>Mongolia Simplifies E-Visa Application Process</h4>
                     <p>The Immigration Agency has introduced improvements to make visa applications more efficient.</p>
                 </div>
             </div>
-            <a href="#" class="see-all">See All News</a>
+            <a href="#" class="see-all" id="see-all-news">See All News</a>
         </div>
     </section>
     
@@ -578,31 +666,31 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Destinations</a></li>
-                        <li><a href="#">Travel Info</a></li>
-                        <li><a href="#">Experiences</a></li>
-                        <li><a href="#">Plan Your Trip</a></li>
+                        <li><a href="#" class="footer-link" data-link="home">Home</a></li>
+                        <li><a href="#" class="footer-link" data-link="destinations">Destinations</a></li>
+                        <li><a href="#" class="footer-link" data-link="travel-info">Travel Info</a></li>
+                        <li><a href="#" class="footer-link" data-link="experiences">Experiences</a></li>
+                        <li><a href="#" class="footer-link" data-link="plan">Plan Your Trip</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Useful Resources</h3>
                     <ul class="footer-links">
-                        <li><a href="#">COVID-19 Updates</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Travel Insurance</a></li>
-                        <li><a href="#">Mongolia Travel Guide</a></li>
-                        <li><a href="#">Map & Directions</a></li>
+                        <li><a href="#" class="footer-link" data-link="covid">COVID-19 Updates</a></li>
+                        <li><a href="#" class="footer-link" data-link="faq">FAQ</a></li>
+                        <li><a href="#" class="footer-link" data-link="insurance">Travel Insurance</a></li>
+                        <li><a href="#" class="footer-link" data-link="guide">Mongolia Travel Guide</a></li>
+                        <li><a href="#" class="footer-link" data-link="map">Map & Directions</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Support</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Emergency Contacts</a></li>
-                        <li><a href="#">Embassies & Consulates</a></li>
-                        <li><a href="#">Medical Services</a></li>
-                        <li><a href="#">Lost & Found</a></li>
-                        <li><a href="#">Report an Issue</a></li>
+                        <li><a href="#" class="footer-link" data-link="emergency">Emergency Contacts</a></li>
+                        <li><a href="#" class="footer-link" data-link="embassies">Embassies & Consulates</a></li>
+                        <li><a href="#" class="footer-link" data-link="medical">Medical Services</a></li>
+                        <li><a href="#" class="footer-link" data-link="lost">Lost & Found</a></li>
+                        <li><a href="#" class="footer-link" data-link="report">Report an Issue</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -610,8 +698,8 @@
                     <div class="contact-info">
                         <p>Tourism Department of Mongolia</p>
                         <p>Peace Avenue 16/11, Ulaanbaatar</p>
-                        <p>Email: info@travelmongolia.gov.mn</p>
-                        <p>Phone: +976 11 325678</p>
+                        <p>Email: <a href="mailto:info@travelmongolia.gov.mn">info@travelmongolia.gov.mn</a></p>
+                        <p>Phone: <a href="tel:+97611325678">+976 11 325678</a></p>
                     </div>
                 </div>
             </div>
@@ -620,10 +708,24 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Modal -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 class="modal-title">Information</h3>
+            <div class="modal-body">
+                <p>Content will appear here...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
 
     <script>
-        // Simple JavaScript for mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
             const menuToggle = document.querySelector('.menu-toggle');
             const mainNav = document.querySelector('.main-nav');
             
@@ -633,15 +735,128 @@
             
             // Language switcher functionality
             const langButtons = document.querySelectorAll('.language-switcher button');
+            const translations = {
+                en: {
+                    hero: {
+                        title: "Experience the Land of Blue Sky",
+                        description: "Discover Mongolia's breathtaking landscapes, rich nomadic culture, and warm hospitality",
+                        button: "Plan Your Adventure"
+                    }
+                },
+                mn: {
+                    hero: {
+                        title: "Хөх тэнгэрийн орныг танд",
+                        description: "Монголын үзэсгэлэнт байгаль, өв соёл, дулаан зочломтгой уур амьсгалыг мэдрээрэй",
+                        button: "Аяллаа төлөвлөх"
+                    }
+                },
+                ru: {
+                    hero: {
+                        title: "Испытайте страну голубого неба",
+                        description: "Откройте для себя захватывающие пейзажи, богатую кочевую культуру и теплое гостеприимство Монголии",
+                        button: "Спланируйте свое приключение"
+                    }
+                },
+                cn: {
+                    hero: {
+                        title: "体验蓝天之国",
+                        description: "探索蒙古国令人叹为观止的风景、丰富的游牧文化和热情好客的传统",
+                        button: "规划您的冒险"
+                    }
+                }
+            };
+            
             langButtons.forEach(button => {
                 button.addEventListener('click', function() {
+                    // Remove active class from all buttons
                     langButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
                     this.classList.add('active');
-                    // Here you would normally implement actual language switching
-                    // For demonstration, we're just toggling the active class
+                    
+                    // Update content based on language
+                    const lang = this.dataset.lang;
+                    if (translations[lang]) {
+                        // Update hero content
+                        document.querySelector('.hero h2').textContent = translations[lang].hero.title;
+                        document.querySelector('.hero p').textContent = translations[lang].hero.description;
+                        document.querySelector('.hero-btn').textContent = translations[lang].hero.button;
+                        
+                        // Show notification
+                        showNotification(`Language changed to ${getLangName(lang)}`);
+                    }
                 });
             });
-        });
-    </script>
-</body>
-</html>
+            
+            function getLangName(code) {
+                const names = {
+                    en: 'English',
+                    mn: 'Mongolian',
+                    ru: 'Russian',
+                    cn: 'Chinese'
+                };
+                return names[code] || code.toUpperCase();
+            }
+            
+            // Modal functionality
+            const modal = document.getElementById('infoModal');
+            const closeModal = document.querySelector('.close-modal');
+            
+            function openModal(title, content) {
+                document.querySelector('.modal-title').textContent = title;
+                document.querySelector('.modal-body').innerHTML = `<p>${content}</p>`;
+                modal.style.display = 'block';
+            }
+            
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Home logo click
+            document.getElementById('home-logo').addEventListener('click', function() {
+                showNotification('Welcome to Travel Mongolia!');
+            });
+            
+            // Navigation links
+            const navLinks = {
+                'nav-home': 'Home page',
+                'nav-destinations': 'Destinations overview',
+                'nav-travel-info': 'Travel information',
+                'nav-experiences': 'Experiences in Mongolia',
+                'nav-plan': 'Plan your trip',
+                'nav-map': 'Mongolia map',
+                'nav-about': 'About Mongolia tourism',
+                'nav-contact': 'Contact information'
+            };
+            
+            Object.keys(navLinks).forEach(id => {
+                document.getElementById(id).addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification(`Navigating to: ${navLinks[id]}`);
+                });
+            });
+            
+            // Dropdown items
+            const dropdownItems = document.querySelectorAll('.dropdown-content a');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.parentElement.previousElementSibling.id.split('-')[1];
+                    const item = this.textContent;
+                    showNotification(`Selected ${category}: ${item}`);
+                });
+            });
+            
+            // Hero button
+            document.getElementById('plan-adventure-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal('Plan Your Adventure', 'Our expert travel consultants can help you create the perfect itinerary for your Mongolian adventure. Please tell us what experiences you are looking for and how many days you plan to stay.');
+            });
+            
+            // Card buttons
